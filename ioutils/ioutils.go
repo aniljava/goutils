@@ -1,16 +1,16 @@
 package ioutils
 
 import (
-	"bufio"
-	"io"
 	"os"
 )
 
-func FileReader(path string) io.Reader {
-	file, err := os.Open(path)
+/**
+ * Errorless file. Panic in case of error.
+ */
+func File(path string) *os.File {
+	file, err := os.Create(path)
 	if err != nil {
-		panic("File not found : " + path)
-		return nil
+		panic(err.Error())
 	}
-	return bufio.NewReader(file)
+	return file
 }
