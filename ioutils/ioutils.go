@@ -4,11 +4,16 @@ import (
 	"os"
 )
 
-/**
- * Errorless file. Panic in case of error.
- */
-func File(path string) *os.File {
+func CreateFile(path string) *os.File {
 	file, err := os.Create(path)
+	if err != nil {
+		panic(err.Error())
+	}
+	return file
+}
+
+func OpenFile(path string) *os.File {
+	file, err := os.Open(path)
 	if err != nil {
 		panic(err.Error())
 	}
