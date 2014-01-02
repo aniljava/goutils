@@ -2,6 +2,7 @@ package generalutils
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -62,4 +63,12 @@ func replaceMultiple(str, replace string, find ...string) string {
 	}
 	return str
 
+}
+
+func ToInt(str string) int {
+	if i, err := strconv.ParseInt(str, 10, 32); err == nil {
+		return int(i)
+	} else {
+		panic(err)
+	}
 }
