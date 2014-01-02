@@ -72,3 +72,13 @@ func ToInt(str string) int {
 		panic(err)
 	}
 }
+
+func NormalizeNumberString(str string) string {
+	result := ""
+	for _, b := range []byte(str) {
+		if (b >= 48 && b <= 57) || b == 46 {
+			result += string(b)
+		}
+	}
+	return result
+}
