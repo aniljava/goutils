@@ -1,0 +1,1 @@
+Collection of golang shorthands. Most of the functions are dirty and intended to be used for scripting.
