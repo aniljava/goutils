@@ -2,6 +2,8 @@ package generalutils
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -97,4 +99,10 @@ func (a Sortable) Swap(i, j int) {
 }
 func (a Sortable) Less(i, j int) bool {
 	return a.LessFx(i, j)
+}
+
+func GetCurrentDirectory() string {
+	_curr_dir, _ := filepath.Abs(".")
+	_fs, _ := os.Stat(_curr_dir)
+	return _fs.Name()
 }
