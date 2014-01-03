@@ -84,17 +84,17 @@ func NormalizeNumberString(str string) string {
 }
 
 type Sortable struct {
-	len  func() int
-	swap func(i, j int)
-	less func(i, j int) bool
+	LenFx  func() int
+	SwapFx func(i, j int)
+	LessFx func(i, j int) bool
 }
 
 func (a Sortable) Len() int {
-	return a.len()
+	return a.LenFx()
 }
 func (a Sortable) Swap(i, j int) {
-	a.swap(i, j)
+	a.SwapFx(i, j)
 }
 func (a Sortable) Less(i, j int) bool {
-	return a.less(i, j)
+	return a.LessFx(i, j)
 }
