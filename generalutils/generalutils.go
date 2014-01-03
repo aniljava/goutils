@@ -106,3 +106,22 @@ func GetCurrentDirectory() string {
 	_fs, _ := os.Stat(_curr_dir)
 	return _fs.Name()
 }
+
+func ToTitleCase(str string) string {
+	words := strings.Split(str, " ")
+	result := ""
+
+	for _, word := range words {
+		if len(word) > 4 {
+			word = strings.ToUpper(word[0:1]) + word[1:]
+		}
+
+		if result == "" {
+			result = word
+		} else {
+			result += " " + word
+		}
+	}
+
+	return result
+}
