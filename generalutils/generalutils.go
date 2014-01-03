@@ -82,3 +82,19 @@ func NormalizeNumberString(str string) string {
 	}
 	return result
 }
+
+type Sortable struct {
+	len  func() int
+	swap func(i, j int)
+	less func(i, j int) bool
+}
+
+func (a Sortable) Len() int {
+	return a.len()
+}
+func (a Sortable) Swap(i, j int) {
+	a.swap(i, j)
+}
+func (a Sortable) Less(i, j int) bool {
+	return a.less(i, j)
+}
