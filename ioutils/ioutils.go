@@ -1,6 +1,7 @@
 package ioutils
 
 import (
+	"io/ioutil"
 	"os"
 )
 
@@ -18,4 +19,12 @@ func OpenFile(path string) *os.File {
 		panic(err.Error())
 	}
 	return file
+}
+
+func ReadFile(path string) string {
+	if data, err := ioutil.ReadFile(path); err == nil {
+		return string(data)
+	} else {
+		panic(err)
+	}
 }
