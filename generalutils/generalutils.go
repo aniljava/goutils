@@ -77,6 +77,14 @@ func ToInt(str string) int {
 	}
 }
 
+func ToFloat(str string) float64 {
+	if i, err := strconv.ParseFloat(str, 64); err == nil {
+		return i
+	} else {
+		panic(err)
+	}
+}
+
 func NormalizeNumberString(str string) string {
 	result := ""
 	for _, b := range []byte(str) {
