@@ -28,3 +28,15 @@ func ReadFile(path string) string {
 		panic(err)
 	}
 }
+
+func ListFileNames(path string) []string {
+	result := []string{}
+	if dir, err := ioutil.ReadDir(path); err == nil {
+		for _, fi := range dir {
+			result = append(result, fi.Name())
+		}
+	} else {
+		return nil
+	}
+	return result
+}
