@@ -134,5 +134,6 @@ func CSVEncoded(data ...string) string {
 	writer := csv.NewWriter(&w)
 	writer.Write(data)
 	writer.Flush()
-	return w.String()
+	line := w.String()
+	return line[:len(line)-1]
 }
