@@ -167,7 +167,7 @@ func MapToArrayWithHeader(data map[string]string, header []string) []string {
 	return result
 }
 
-func replaceRepeated(str, find, replace string) string {
+func ReplaceRepeated(str, find, replace string) string {
 	for strings.Index(str, find) != -1 {
 		str = strings.Replace(str, find, replace, -1)
 	}
