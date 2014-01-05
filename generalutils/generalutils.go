@@ -64,7 +64,7 @@ func ConcatWithSeperator(seperator string, ifaces ...interface{}) string {
 // Removes leading and following white spaces, convert new lines, tabs to
 // space. Converts all double spaces to single space.
 func CompactTrim(str string) string {
-	str = replaceMultiple(str, " ", "\n", "\r", "\t")
+	str = ReplaceMultiple(str, " ", "\n", "\r", "\t")
 	str = strings.TrimSpace(str)
 
 	for strings.Index(str, "  ") != -1 {
@@ -73,7 +73,7 @@ func CompactTrim(str string) string {
 	str = strings.TrimSpace(str)
 	return str
 }
-func replaceMultiple(str, replace string, find ...string) string {
+func ReplaceMultiple(str, replace string, find ...string) string {
 	for _, f := range find {
 		str = strings.Replace(str, f, replace, -1)
 	}
