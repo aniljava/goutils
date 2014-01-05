@@ -49,6 +49,18 @@ func Concat(ifaces ...interface{}) string {
 	return result
 }
 
+func ConcatWithSeperator(seperator string, ifaces ...interface{}) string {
+	result := ""
+	for _, iface := range ifaces {
+		if result == "" {
+			result = fmt.Sprint(iface)
+		} else {
+			result += seperator + fmt.Sprint(iface)
+		}
+	}
+	return result
+}
+
 // Removes leading and following white spaces, convert new lines, tabs to
 // space. Converts all double spaces to single space.
 func CompactTrim(str string) string {
