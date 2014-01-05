@@ -1,6 +1,8 @@
 package generalutils
 
 import (
+	"bytes"
+	"encoding/csv"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -124,4 +126,13 @@ func ToTitleCase(str string) string {
 	}
 
 	return result
+}
+
+func CSVEncoded(data ...string) string {
+	w := bytes.Buffer{}
+
+	writer := csv.NewWriter(&w)
+	writer.Write(data)
+	writer.Flush()
+	return w.String()
 }
