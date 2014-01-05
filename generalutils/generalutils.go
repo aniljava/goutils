@@ -137,3 +137,12 @@ func CSVEncoded(data ...string) string {
 	line := w.String()
 	return line[:len(line)-1]
 }
+
+func MapToArrayWithHeader(data map[string]string, header []string) []string {
+	result := []string{}
+	for _, k := range header {
+		v := data[k]
+		result = append(result, v)
+	}
+	return result
+}
