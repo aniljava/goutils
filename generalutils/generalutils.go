@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -172,4 +173,27 @@ func ReplaceRepeated(str, find, replace string) string {
 		str = strings.Replace(str, find, replace, -1)
 	}
 	return str
+}
+
+func GetCache(key string) string {
+	if data, err := ioutil.ReadFile("/cache/" + key); err == nil {
+		return string(data)
+	} else {
+		return ""
+	}
+}
+
+func SetCache(key, value string) {
+	folder := "/cache/" + key
+	os.MkdirAll(folder[:strings.LastIndex(folder, "/")], 777)
+	ioutil.WriteFile(folder, []byte(value), 777)
+}
+
+func CacheExists(key string) bool {
+	if file, err := os.Open("/cache/" + key); err == nil {
+		file.Close()
+		return true
+	} else {
+		return false
+	}
 }
