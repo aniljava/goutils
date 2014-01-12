@@ -22,7 +22,7 @@ func example() {
 }
 
 func OpenWithHeader(name string) *CSVDB {
-	file := ioutils.CreateFile(name)
+	file := ioutils.OpenFile(name)
 	reader := csv.NewReader(file)
 	data, _ := reader.ReadAll()
 	file.Close()
