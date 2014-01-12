@@ -10,9 +10,6 @@ func Exec(name string, args ...string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if err := cmd.Run(); err == nil {
-		return string(data), nil
-	} else {
-		return "", err
-	}
+	return string(data), nil
+
 }
