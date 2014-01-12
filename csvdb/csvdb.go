@@ -2,6 +2,7 @@ package csvdb
 
 import (
 	"encoding/csv"
+	"fmt"
 	"github.com/aniljava/goutils/generalutils"
 	"github.com/aniljava/goutils/ioutils"
 	"os"
@@ -82,6 +83,10 @@ func (writer *CSVDB) Get(col string) string {
 func (writer *CSVDB) FindRow(col string, val string) []string {
 	for _, row := range writer.data {
 		index := generalutils.ArrayIndex(writer.Header, col)
+		if index == -1 {
+			fmt.Println(col, val)
+			return nil
+		}
 		if index < len(row) && val == row[index] {
 			return row
 		}
