@@ -23,12 +23,13 @@ func example() {
 
 func OpenWithHeader(name string) *CSVDB {
 	file := ioutils.OpenFile(name)
+	defer file.Close()
 	reader := csv.NewReader(file)
 	data, _ := reader.ReadAll()
-	file.Close()
 	db := CSVDB{
 		Header:    data[0],
 		index:     1,
+		data:      data,
 		writemode: false,
 	}
 	return &db
