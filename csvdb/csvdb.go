@@ -80,11 +80,31 @@ func (writer *CSVDB) Get(col string) string {
 	return writer.data[writer.index][index]
 }
 
+func (writer *CSVDB) Filter(col string, val string) *CSVDB {
+	index := generalutils.ArrayIndex(writer.Header, col)
+	if index == -1 {
+		return nil
+	}
+	data := [][]string{}
+	data = append(data, writer.Header)
+
+	for _, row := range writer.data {
+		if val == row[index] {
+			data = append(data, row)
+		}
+	}
+	db := CSVDB{
+		Header: writer.Header,
+		data:   data,
+		index:  1,
+	}
+	return &db
+}
+
 func (writer *CSVDB) FindRow(col string, val string) []string {
 	for _, row := range writer.data {
 		index := generalutils.ArrayIndex(writer.Header, col)
 		if index == -1 {
-			fmt.Println(col, val)
 			return nil
 		}
 		if index < len(row) && val == row[index] {
