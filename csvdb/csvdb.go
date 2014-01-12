@@ -25,6 +25,7 @@ func OpenWithHeader(name string) *CSVDB {
 	file := ioutils.OpenFile(name)
 	defer file.Close()
 	reader := csv.NewReader(file)
+	reader.LazyQuotes = true
 	if data, err := reader.ReadAll(); err == nil {
 		db := CSVDB{
 			Header:    data[0],
