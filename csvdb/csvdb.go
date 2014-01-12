@@ -98,6 +98,10 @@ func (writer *CSVDB) FindCell(searchcol string, searchval string, col string) st
 	row := writer.FindRow(searchcol, searchval)
 
 	index := generalutils.ArrayIndex(writer.Header, col)
+	if index == -1 {
+		fmt.Println(writer.Header, col)
+		return ""
+	}
 	if index < len(row) {
 		return row[index]
 	}
