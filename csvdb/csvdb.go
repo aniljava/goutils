@@ -55,8 +55,10 @@ func (writer *CSVDB) Close() {
 	writer.file.Close()
 }
 
-func (writer *CSVDB) Next() {
+func (writer *CSVDB) Next() []string {
+	result := writer.data[writer.index]
 	writer.index = writer.index + 1
+	return result
 }
 
 func (writer *CSVDB) HasNext() bool {
