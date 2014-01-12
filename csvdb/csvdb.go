@@ -25,14 +25,19 @@ func OpenWithHeader(name string) *CSVDB {
 	file := ioutils.OpenFile(name)
 	defer file.Close()
 	reader := csv.NewReader(file)
-	data, _ := reader.ReadAll()
-	db := CSVDB{
-		Header:    data[0],
-		index:     1,
-		data:      data,
-		writemode: false,
+	if data, err := reader.ReadAll(); err == nil {
+		db := CSVDB{
+			Header:    data[0],
+			index:     1,
+			data:      data,
+			writemode: false,
+		}
+		return &db
+	} else {
+		panic(err)
 	}
-	return &db
+	return nil
+
 }
 
 func NewWithHeader(name string, headers []string) *CSVDB {
