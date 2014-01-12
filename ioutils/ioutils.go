@@ -40,3 +40,12 @@ func ListFileNames(path string) []string {
 	}
 	return result
 }
+
+func Exists(path string) bool {
+	file, err := os.Open(path)
+	defer file.Close()
+	if err != nil {
+		return false
+	}
+	return true
+}
