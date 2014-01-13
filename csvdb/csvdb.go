@@ -9,17 +9,55 @@ import (
 )
 
 type CSVDB struct {
-	Header    []string
-	file      *os.File
-	writer    *csv.Writer
-	data      [][]string
-	writemode bool
-	index     int
+	Header        []string
+	file          *os.File
+	writer        *csv.Writer
+	data          [][]string
+	writemode     bool
+	index         int
+	invertedIndex map[string]([]int)
 }
 
 func example() {
 	db := NewWithHeader("/root/Desktop/one.csv", []string{"id", "Apple"})
 	db.Close()
+}
+
+func OpenWithIndex(name string, indices ...string) *CSVDB {
+	file := ioutils.OpenFile(name)
+	defer file.Close()
+	reader := csv.NewReader(file)
+	reader.LazyQuotes = true
+	reader.TrimLeadingSpace = true
+	reader.TrailingComma = true
+	if data, err := reader.ReadAll(); err == nil {
+		db := CSVDB{
+			Header:        data[0],
+			index:         1,
+			data:          data,
+			writemode:     false,
+			invertedIndex: map[string]([]int){},
+		}
+
+		for i, row := range data {
+			for _, h := range indices {
+				k := generalutils.ArrayIndex(data[0], h)
+				if k != -1 {
+					val := row[k]
+					if r, exists := db.invertedIndex[h+"-"+val]; exists {
+						r = append(r, i)
+					} else {
+						db.invertedIndex[h+"-"+val] = []int{i}
+					}
+				}
+			}
+		}
+
+		return &db
+	} else {
+		panic(err)
+	}
+	return nil
 }
 
 func OpenWithHeader(name string) *CSVDB {
@@ -54,6 +92,17 @@ func NewWithHeader(name string, headers []string) *CSVDB {
 	}
 	db.Write(headers)
 	return &db
+}
+
+func (db *CSVDB) Search(key, val string) [][]string {
+	result := [][]string{}
+
+	if r, exists := db.invertedIndex[key+"-"+val]; exists {
+		for _, i := range r {
+			result = append(result, data[i])
+		}
+	}
+	return result
 }
 
 func (writer *CSVDB) Write(record []string) {
