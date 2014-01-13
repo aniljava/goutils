@@ -31,6 +31,7 @@ func OpenWithIndex(name string, indices ...string) *CSVDB {
 	reader.TrimLeadingSpace = true
 	reader.TrailingComma = true
 	if data, err := reader.ReadAll(); err == nil {
+		fmt.Println(len(data))
 		db := CSVDB{
 			Header:        data[0],
 			index:         1,
@@ -48,7 +49,7 @@ func OpenWithIndex(name string, indices ...string) *CSVDB {
 						r = append(r, i)
 					} else {
 						db.invertedIndex[h+"-"+val] = []int{i}
-						fmt.Println(val)
+						//fmt.Println(val)
 					}
 				}
 			}
