@@ -95,7 +95,7 @@ func NewWithHeader(name string, headers []string) *CSVDB {
 	return &db
 }
 
-func (db *CSVDB) Search(key, val string) [][]string {
+func (db *CSVDB) SearchRows(key, val string) [][]string {
 	result := [][]string{}
 
 	if r, exists := db.invertedIndex[key+"-"+val]; exists {
@@ -103,6 +103,21 @@ func (db *CSVDB) Search(key, val string) [][]string {
 			result = append(result, db.data[i])
 		}
 	}
+	return result
+}
+
+func (db *CSVDB) SearchCells(key, val, col string) []string {
+	index := generalutils.ArrayIndex(db.Header, col)
+	result := []string{}
+	if index == -1 {
+		return result
+	}
+	search := db.SearchRows(key, val)
+
+	for _, v := range search {
+		result = append(result, v[index])
+	}
+
 	return result
 }
 
