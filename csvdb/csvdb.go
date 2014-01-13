@@ -99,7 +99,7 @@ func (db *CSVDB) Search(key, val string) [][]string {
 
 	if r, exists := db.invertedIndex[key+"-"+val]; exists {
 		for _, i := range r {
-			result = append(result, data[i])
+			result = append(result, db.data[i])
 		}
 	}
 	return result
