@@ -49,7 +49,6 @@ func OpenWithIndex(name string, indices ...string) *CSVDB {
 						r = append(r, i)
 					} else {
 						db.invertedIndex[h+"-"+val] = []int{i}
-						fmt.Println(db.invertedIndex[h+"-"+val])
 					}
 				}
 			}
