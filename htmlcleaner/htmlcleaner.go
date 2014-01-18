@@ -3,7 +3,6 @@ package htmlcleaner
 import (
 	"code.google.com/p/go-html-transform/h5"
 	"code.google.com/p/go.net/html"
-	"fmt"
 	"github.com/aniljava/goutils/generalutils"
 	"strings"
 )
