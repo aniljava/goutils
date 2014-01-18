@@ -30,8 +30,14 @@ func Clean(data string, tags []string, attributes []string) string {
 
 	if tree, err := h5.NewFromString(data); err == nil {
 		result := WalkNodes(tree.Top(), tags, attributes)
+		result = generalutils.CompactTrim(result)
+		result = format(result)
 		return result
 	}
+	return data
+}
+
+func format(data string) string {
 	return data
 }
 
@@ -78,7 +84,6 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 			result = content
 		}
 		fmt.Println(content)
-		return result
 	} else {
 		return ""
 	}
