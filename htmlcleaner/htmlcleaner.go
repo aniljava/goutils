@@ -47,8 +47,9 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 		for _, inc := range tags {
 			include = include || inc == tag
 		}
-		if !include {
-			return ""
+		if include {
+			pre = "<" + tag + ">"
+			post = "</" + tag + ">"
 		}
 
 		if n.Type == 4 || (n.Type == 1 && strings.TrimSpace(val) == "") {
@@ -58,9 +59,6 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 		if n.Type == 1 {
 			content = generalutils.CompactTrim(n.Data)
 		}
-
-		pre = "<" + tag + ">"
-		post = "</" + tag + ">"
 
 		for c := n.FirstChild; c != nil; c = c.NextSibling {
 			if result := WalkNodes(c, tags, attributes); strings.TrimSpace(result) != "" {
