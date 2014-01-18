@@ -79,11 +79,9 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 
 	if strings.TrimSpace(content) != "" {
 		result := pre + content + post
-
 		if pre == "<b>" && len(content) > 64 {
 			result = content
 		}
-		fmt.Println(content)
 	} else {
 		return ""
 	}
