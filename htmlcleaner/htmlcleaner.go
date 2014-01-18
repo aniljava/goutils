@@ -3,10 +3,13 @@ package htmlcleaner
 import (
 	"code.google.com/p/go-html-transform/h5"
 	"code.google.com/p/go.net/html"
+	"fmt"
 	"github.com/aniljava/goutils/generalutils"
 	"strings"
 )
-,
+
+var DefaultTags []string = []string{
+	"p",
 	"b",
 	"br",
 	"table",
@@ -76,8 +79,9 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 
 	if strings.TrimSpace(content) != "" {
 		result := pre + content + post
+
 		if pre == "<b>" && len(content) > 64 {
-			result = content			
+			result = content
 		}
 		return result
 	} else {
