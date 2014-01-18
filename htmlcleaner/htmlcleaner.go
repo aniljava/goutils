@@ -3,11 +3,21 @@ package htmlcleaner
 import (
 	"code.google.com/p/go-html-transform/h5"
 	"code.google.com/p/go.net/html"
+	"fmt"
 	"github.com/aniljava/goutils/generalutils"
 	"strings"
 )
 
-var DefaultTags []string = []string{}
+var DefaultTags []string = []string{
+	"p",
+	"b",
+	"br",
+	"table",
+	"tr",
+	"td",
+	"th",
+	"div",
+}
 var DefaultAttrs []string = []string{}
 
 func Clean(data string, tags []string, attributes []string) string {
@@ -69,7 +79,7 @@ func WalkNodes(n *html.Node, tags, attributes []string) string {
 		if pre == "<b>" && len(content) > 64 {
 			result = content
 		}
-
+		fmt.Println(content)
 		return result
 	} else {
 		return ""
