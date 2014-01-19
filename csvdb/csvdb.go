@@ -206,10 +206,17 @@ func Open(name string) *DB {
 	db.FileName = name
 
 	if ioutils.Exists(name) {
-		if conn, err := import_csv(name); err == nil {
-			db.Conn = conn
+		if strings.HasSuffix(name, ".csv") {
+			if conn, err := import_csv(name); err == nil {
+				db.Conn = conn
+			} else {
+				return nil
+			}
 		} else {
-			return nil
+			var err error
+			if db.Conn, err = sqlite.Open(name); err != nil {
+				panic(err)
+			}
 		}
 	} else {
 		if conn, err := sqlite.Open(":memory:"); err == nil {
