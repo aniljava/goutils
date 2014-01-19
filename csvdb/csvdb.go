@@ -297,7 +297,7 @@ func setHeader(conn *sqlite.Conn, header []string) map[string]string {
 func toid(str string) string {
 	id := generalutils.GetId(str)
 	id = strings.Replace(id, "-", "_", -1)
-	return str
+	return id
 }
 
 func import_csv(name string) (*sqlite.Conn, error) {
