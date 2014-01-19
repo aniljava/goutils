@@ -249,6 +249,8 @@ func (db *DB) SetHeader(header ...string) *DB {
 		panic(err)
 	}
 	db.Conn.Exec("CREATE TABLE headermeta (id TEXT, name TEXT)")
+	db.Header = header
+	db.HeaderMap = map[string]string{}
 
 	sql := ""
 	for _, h := range header {
