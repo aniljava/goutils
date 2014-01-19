@@ -209,8 +209,11 @@ func (db *DB) Insert(data []string) {
 func (db *DB) QueryString(col string, clause string, args ...string) string {
 
 	stmt, _ := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + clause)
+	fmt.Println(stmt.SQL())
 	defer stmt.Finalize()
-	stmt.Bind(args)
+	if args != nil {
+		stmt.Bind(args)
+	}
 	if exists, _ := stmt.Next(); exists {
 		val := make([]interface{}, 1)
 		stmt.ScanValues(val)
