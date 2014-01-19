@@ -45,7 +45,7 @@ func GetId(str string) string {
 
 	arr := []byte(str)
 	for _, b := range arr {
-		if (b >= 48 && b <= 57) || (b >= 65 && b <= 90) || (b >= 97 && b <= 124) {
+		if (b >= 48 && b <= 57) || (b >= 65 && b <= 90) || (b >= 97 && b <= 122) {
 			result += string(b)
 		} else {
 			result += "-"
