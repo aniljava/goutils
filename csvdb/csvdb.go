@@ -208,8 +208,10 @@ func (db *DB) Insert(data []string) {
 
 func (db *DB) QueryString(col string, clause string, args ...string) string {
 
-	stmt, _ := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + clause)
-	fmt.Println(stmt.SQL())
+	stmt, err := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + clause)
+	if err != nil {
+		panic(err)
+	}
 	defer stmt.Finalize()
 	if args != nil {
 		a := generalutils.StrArrayToInterfaceArray(args)
