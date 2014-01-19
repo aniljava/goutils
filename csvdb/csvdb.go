@@ -275,6 +275,7 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 		result = append(result, r)
 		exists, err = stmt.Next()
 	}
+	fmt.Println(result)
 	return result
 }
 
