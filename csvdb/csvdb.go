@@ -258,6 +258,7 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 		val := make([]interface{}, stmt.ColumnCount())
 		stmt.ScanValues(val)
 		names := stmt.ColumnNames()
+		fmt.Println(names)
 		stmt.ScanValues(val)
 
 		r := map[string]string{}
