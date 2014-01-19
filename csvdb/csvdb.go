@@ -363,7 +363,7 @@ func (db *DB) CSVExport(writer io.Writer) error {
 		return nil
 	}
 }
-func (db *DB) CSVToBytes(writer io.Writer) []byte {
+func (db *DB) CSVToBytes() []byte {
 	w := bytes.NewBuffer(nil)
 	db.CSVExport(w)
 	return w.Bytes()
