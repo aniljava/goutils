@@ -304,6 +304,10 @@ func (db *DB) SetHeader(header ...string) *DB {
 		} else {
 			sql += ", " + id + " TEXT "
 		}
+
+		if db.Key == id {
+			sql += " PRIMARY KEY "
+		}
 	}
 	sql += ")"
 
