@@ -257,9 +257,9 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 	for exists && err == nil {
 		val := make([]interface{}, stmt.ColumnCount())
 		stmt.ScanValues(val)
-
 		names := stmt.ColumnNames()
 		stmt.ScanValues(val)
+		fmt.Println(val)
 
 		r := map[string]string{}
 		for i, h := range names {
