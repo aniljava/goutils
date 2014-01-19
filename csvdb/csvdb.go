@@ -261,7 +261,7 @@ func Open(name string) *DB {
 			if conn, err := import_csv(name); err == nil {
 				db.Conn = conn
 			} else {
-				return nil
+				panic(err)
 			}
 		} else {
 			var err error
