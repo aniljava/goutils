@@ -252,7 +252,6 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 	}
 	defer stmt.Finalize()
 	stmt.Bind(args...)
-	fmt.Println(stmt.SQL())
 
 	exists, err := stmt.Next()
 	for exists && err == nil {
