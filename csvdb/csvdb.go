@@ -220,7 +220,9 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 	if exists, _ := stmt.Next(); exists {
 		val := make([]interface{}, 1)
 		stmt.ScanValues(val)
-		return val[0].(string)
+		if val[0] != nil {
+			return val[0].(string)
+		}
 	} else {
 		return ""
 	}
