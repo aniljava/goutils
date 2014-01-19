@@ -270,6 +270,13 @@ func Open(name string) *DB {
 			}
 
 		}
+	} else if name != "" {
+		if strings.HasSuffix(name, ".db") {
+			var err error
+			if db.Conn, err = sqlite.Open(name); err != nil {
+				panic(err)
+			}
+		}
 	} else {
 		if conn, err := sqlite.Open(":memory:"); err == nil {
 			db.Conn = conn
