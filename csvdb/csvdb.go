@@ -263,7 +263,7 @@ func Open(name string) *DB {
 			if db.Conn, err = sqlite.Open(name); err != nil {
 				panic(err)
 			}
-			fmt.Println("OPENED : " + name)
+
 		}
 	} else {
 		if conn, err := sqlite.Open(":memory:"); err == nil {
@@ -362,7 +362,7 @@ func (db *DB) CSVExport(writer io.Writer) error {
 	csv.Write(header)
 	csv.Flush()
 
-	stmt, _ := db.Conn.Prepare("SELECT * FROM CSV ORDER BY " + header[0])
+	stmt, _ := db.Conn.Prepare("SELECT * FROM CSV ORDER BY " + toid(header[0]))
 	defer stmt.Finalize()
 
 	exists, err := stmt.Next()
