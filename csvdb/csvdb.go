@@ -233,26 +233,7 @@ type DB struct {
 
 func (db *DB) SetHeader(header ...string) *DB {
 	db.Header = header
-
-	if err := db.Conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
-		panic(err)
-	}
-
-	sql := ""
-	for _, h := range header {
-		if sql == "" {
-			sql = "CREATE TABLE IF NOT EXISTS CSV (" + h + " TEXT "
-		} else {
-			sql += ", " + h + " TEXT "
-
-		}
-	}
-	sql += ")"
-
-	if err := db.Conn.Exec(sql); err != nil {
-		panic(err)
-	}
-
+	setHeader(db.Conn, header)
 	return db
 }
 
@@ -283,6 +264,42 @@ func Open(name string) *DB {
 	return &db
 }
 
+func setHeader(conn *sqlite.Conn, header []string) map[string]string {
+
+	headermap := map[string]string{}
+
+	if err := conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
+		panic(err)
+	}
+	conn.Exec("CREATE TABLE headermeta (id TEXT, name TEXT)")
+
+	sql := ""
+	for _, h := range header {
+		id := toid(h)
+
+		headermap[id] = h
+
+		conn.Exec("INSERT INTO headermeta (?,?)", id, h)
+		if sql == "" {
+			sql = "CREATE TABLE IF NOT EXISTS CSV (" + id + " TEXT "
+		} else {
+			sql += ", " + id + " TEXT "
+		}
+	}
+	sql += ")"
+
+	if err := conn.Exec(sql); err != nil {
+		panic(err)
+	}
+	return headermap
+}
+
+func toid(str string) string {
+	id := generalutils.GetId(str)
+	id = strings.Replace(id, "-", "_", -1)
+	return str
+}
+
 func import_csv(name string) (*sqlite.Conn, error) {
 
 	file := ioutils.OpenFile(name)
@@ -293,24 +310,8 @@ func import_csv(name string) (*sqlite.Conn, error) {
 	reader.TrailingComma = true
 	if data, err := reader.ReadAll(); err == nil {
 		if db, err := sqlite.Open(":memory:"); err == nil {
-			sql := ""
-			for _, header := range data[0] {
-				if sql == "" {
-					sql = "CREATE TABLE IF NOT EXISTS CSV (" + header + " TEXT "
-				} else {
-					sql += ", " + header + " TEXT "
 
-				}
-			}
-			sql += ")"
-
-			if db.Exec(sql) != nil {
-				return nil, err
-			}
-			if db.Exec("DELETE FROM CSV") != nil {
-				return nil, err
-			}
-
+			setHeader(db, data[0])
 			qs := strings.Repeat("?,", len(data[0]))
 			qs = qs[:len(qs)-1] // remove last coma
 			if stmt, err := db.Prepare("INSERT INTO CSV VALUES(" + qs + ")"); err == nil {
@@ -336,10 +337,14 @@ func import_csv(name string) (*sqlite.Conn, error) {
 }
 func (db *DB) CSVExport(writer io.Writer) error {
 
-	cols, _ := db.Conn.Columns("main", "CSV")
-	header := []string{}
-	for _, table := range cols {
-		header = append(header, table.Name)
+	header := db.Header
+
+	if header == nil {
+		cols, _ := db.Conn.Columns("main", "CSV")
+		header := []string{}
+		for _, table := range cols {
+			header = append(header, table.Name)
+		}
 	}
 
 	csv := csv.NewWriter(writer)
