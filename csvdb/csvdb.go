@@ -6,6 +6,7 @@ import (
 	"github.com/aniljava/goutils/generalutils"
 	"github.com/aniljava/goutils/ioutils"
 	"github.com/gwenn/gosqlite"
+	"io"
 	"os"
 	"strings"
 )
@@ -219,19 +220,8 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 
 }
 
-func (db *DB) QueryStringByKey(col string, key string, val string) string {
-
-	stmt, _ := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + key + "=?")
-	defer stmt.Finalize()
-	stmt.Bind([]string{val})
-	if exists, _ := stmt.Next(); exists {
-		val := make([]interface{}, 1)
-		stmt.ScanValues(val)
-		return val[0].(string)
-	} else {
-		return ""
-	}
-
+func (db *DB) QueryStringByKey(col string, key string, keyval string) string {
+	return db.QueryString(col, "WHERE "+key+"=?", keyval)
 }
 
 type DB struct {
@@ -342,5 +332,33 @@ func import_csv(name string) (*sqlite.Conn, error) {
 	} else {
 		return nil, err
 	}
+}
+func (db *DB) CSVExport(writer io.Writer) error {
 
+	cols, _ := db.Conn.Columns("main", "CSV")
+	header := []string{}
+	for _, table := range cols {
+		header = append(header, table.Name)
+	}
+
+	csv := csv.NewWriter(writer)
+	csv.Write(header)
+	csv.Flush()
+
+	stmt, _ := db.Conn.Prepare("SELECT * FROM CSV ORDER BY " + header[0])
+	defer stmt.Finalize()
+
+	exists, err := stmt.Next()
+	for exists && err == nil {
+		val := make([]interface{}, len(header))
+		stmt.ScanValues(val)
+		csv.Write(generalutils.InterfaceArrayToStrArray(val))
+		csv.Flush()
+		exists, err = stmt.Next()
+	}
+	if err != nil {
+		return err
+	} else {
+		return nil
+	}
 }
