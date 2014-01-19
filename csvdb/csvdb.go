@@ -243,8 +243,8 @@ type DB struct {
 	HeaderMap map[string]string
 }
 
-func (db *DB) QueryToArray(sql string, args ...interface{}) []([]interface{}) {
-	result := []([]interface{}){}
+func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string {
+	result := []map[string]string{}
 
 	stmt, err := db.Conn.Prepare(sql)
 	if err != nil {
@@ -257,7 +257,22 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []([]interface{}) {
 	for exists && err == nil {
 		val := make([]interface{}, stmt.ColumnCount())
 		stmt.ScanValues(val)
-		result = append(result, val)
+
+		names := stmt.ColumnNames()
+		stmt.ScanValues(val)
+
+		r := map[string]string{}
+		for i, h := range names {
+			v := val[i]
+			value = ""
+			if v != nil {
+				value = v.(string)
+			}
+
+			r[h] = value
+		}
+
+		result = append(result, r)
 		exists, err = stmt.Next()
 	}
 	return result
