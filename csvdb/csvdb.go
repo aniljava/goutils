@@ -247,6 +247,11 @@ func (db *DB) SetHeader(header ...string) *DB {
 	return db
 }
 
+func (db *DB) Close() {
+	//Make changes
+	db.Conn.Close()
+}
+
 func Open(name string) *DB {
 	db := DB{}
 	db.FileName = name
