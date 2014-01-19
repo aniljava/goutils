@@ -1,6 +1,7 @@
 package csvdb
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
 	"github.com/aniljava/goutils/generalutils"
@@ -361,4 +362,9 @@ func (db *DB) CSVExport(writer io.Writer) error {
 	} else {
 		return nil
 	}
+}
+func (db *DB) CSVToBytes(writer io.Writer) []byte {
+	w := bytes.NewBuffer(nil)
+	db.CSVExport(w)
+	return w.Bytes()
 }
