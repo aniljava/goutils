@@ -212,7 +212,7 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 	fmt.Println(stmt.SQL())
 	defer stmt.Finalize()
 	if args != nil {
-		a := generalutils.StrArrayToInterfaceArray(args...)
+		a := generalutils.StrArrayToInterfaceArray(args)
 		stmt.Bind(a...)
 	}
 	if exists, _ := stmt.Next(); exists {
