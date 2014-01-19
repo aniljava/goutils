@@ -228,7 +228,7 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 }
 
 func (db *DB) QueryStringByKey(col string, key string, keyval string) string {
-	return db.QueryString(col, "WHERE "+key+"=?", keyval)
+	return db.QueryString(col, key+"=?", keyval)
 }
 
 type DB struct {
@@ -259,6 +259,7 @@ func Open(name string) *DB {
 			if db.Conn, err = sqlite.Open(name); err != nil {
 				panic(err)
 			}
+			fmt.Println("OPENED : " + name)
 		}
 	} else {
 		if conn, err := sqlite.Open(":memory:"); err == nil {
