@@ -212,7 +212,7 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 	fmt.Println(stmt.SQL())
 	defer stmt.Finalize()
 	if args != nil {
-		stmt.Bind(args)
+		stmt.Bind(args...)
 	}
 	if exists, _ := stmt.Next(); exists {
 		val := make([]interface{}, 1)
