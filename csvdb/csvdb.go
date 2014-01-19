@@ -327,7 +327,7 @@ func Open(name string) *DB {
 	if db.Conn, err = sqlite.Open(db.DBFile); err != nil {
 		panic(err)
 	}
-	fmt.Println(db.Conn)
+	fmt.Println(db.Conn.Tables("main"))
 
 	if ioutils.Exists(db.CSVFile) && db.CSVFile != "" {
 		db.MergeCSV(db.CSVFile)
