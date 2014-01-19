@@ -222,6 +222,8 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 		stmt.ScanValues(val)
 		if val[0] != nil {
 			return val[0].(string)
+		} else {
+			return ""
 		}
 	} else {
 		return ""
