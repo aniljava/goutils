@@ -323,6 +323,7 @@ func Open(name string) *DB {
 		db.DBFile = name
 	}
 
+	var err error
 	if db.Conn, err = sqlite.Open(db.DBFile); err != nil {
 		panic(err)
 	}
