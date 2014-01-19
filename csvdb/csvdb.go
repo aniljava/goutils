@@ -225,7 +225,7 @@ type DB struct {
 	Header   []string
 }
 
-func (db *DB) SetHeader(header ...string) (*DB, error) {
+func (db *DB) SetHeader(header ...string) *DB {
 	db.Header = header
 
 	if err := db.Conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
@@ -244,10 +244,10 @@ func (db *DB) SetHeader(header ...string) (*DB, error) {
 	sql += ")"
 
 	if err := db.Conn.Exec(sql); err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return db, nil
+	return db
 }
 
 func Open(name string) *DB {
