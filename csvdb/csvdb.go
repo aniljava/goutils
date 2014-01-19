@@ -257,9 +257,9 @@ func Open(name string) *DB {
 	db.FileName = name
 
 	if ioutils.Exists(name) {
-		fmt.Println("eXISTS")
 		if strings.HasSuffix(name, ".csv") {
 			if conn, err := import_csv(name); err == nil {
+				fmt.Println("IMPORTED !!")
 				db.Conn = conn
 			} else {
 				panic(err)
