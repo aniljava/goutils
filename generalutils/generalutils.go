@@ -20,6 +20,22 @@ func ArrayIndex(array []string, key string) int {
 	return -1
 }
 
+func StrArrayToInterfaceArray(strs []string) []interface{} {
+	result := [](interface{}){}
+	for _, v := range strs {
+		result = append(result, v)
+	}
+	return result
+}
+
+func InterfaceArrayToStrArray(strs []interface{}) []string {
+	result := []string{}
+	for _, v := range strs {
+		result = append(result, fmt.Sprint(v))
+	}
+	return result
+}
+
 func GetId(str string) string {
 	//a-z|A-Z|0-9|-
 
