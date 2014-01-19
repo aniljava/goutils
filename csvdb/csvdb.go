@@ -213,6 +213,7 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 		panic(err)
 	}
 	defer stmt.Finalize()
+
 	if args != nil {
 		a := generalutils.StrArrayToInterfaceArray(args)
 		stmt.Bind(a...)
@@ -241,6 +242,7 @@ type DB struct {
 	Conn      *sqlite.Conn
 	Header    []string
 	HeaderMap map[string]string
+	Key       string
 }
 
 func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string {
@@ -275,6 +277,11 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 		exists, err = stmt.Next()
 	}
 	return result
+}
+
+func (db *DB) SetKey(key string) *DB {
+	db.Key = key
+	return db
 }
 
 func (db *DB) SetHeader(header ...string) *DB {
