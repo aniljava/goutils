@@ -243,6 +243,26 @@ type DB struct {
 	HeaderMap map[string]string
 }
 
+func (db *DB) QueryToArray(sql string, args ...interface{}) []([]interface{}) {
+	result := []([]interface{}){}
+
+	stmt, err := db.Conn.Prepare(sql)
+	if err != nil {
+		panic(err)
+	}
+	defer stmt.Finalize()
+	stmt.Bind(args)
+
+	exists, err := stmt.Next()
+	for exists && err == nil {
+		val := make([]interface{}, stmt.ColumnCount())
+		stmt.ScanValues(val)
+		result = append(result, val)
+		exists, err = stmt.Next()
+	}
+	return result
+}
+
 func (db *DB) SetHeader(header ...string) *DB {
 
 	if err := db.Conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
