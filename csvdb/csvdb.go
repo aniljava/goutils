@@ -250,6 +250,7 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(stmt.SQL())
 	defer stmt.Finalize()
 	stmt.Bind(args)
 
@@ -327,7 +328,6 @@ func Open(name string) *DB {
 	if db.Conn, err = sqlite.Open(db.DBFile); err != nil {
 		panic(err)
 	}
-	fmt.Println(db.Conn.Tables("main"))
 
 	if ioutils.Exists(db.CSVFile) && db.CSVFile != "" {
 		db.MergeCSV(db.CSVFile)
