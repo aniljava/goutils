@@ -204,9 +204,50 @@ func (db *DB) Insert(data []string) {
 	}
 }
 
+func (db *DB) QueryString(col string, clause string, args ...string) string {
+
+	stmt, _ := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + clause)
+	defer stmt.Finalize()
+	stmt.Bind(args)
+	if exists, _ := stmt.Next(); exists {
+		val := make([]interface{}, 1)
+		stmt.ScanValues(val)
+		return val[0].(string)
+	} else {
+		return ""
+	}
+
+}
+
 type DB struct {
 	FileName string
 	Conn     *sqlite.Conn
+	Header   []string
+}
+
+func (db *DB) SetHeader(header ...string) (*DB, error) {
+	db.Header = header
+
+	if err := db.Conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
+		panic(err)
+	}
+
+	sql := ""
+	for _, h := range header {
+		if sql == "" {
+			sql = "CREATE TABLE IF NOT EXISTS CSV (" + h + " TEXT "
+		} else {
+			sql += ", " + h + " TEXT "
+
+		}
+	}
+	sql += ")"
+
+	if err := db.Conn.Exec(sql); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
 
 func Open(name string) *DB {
