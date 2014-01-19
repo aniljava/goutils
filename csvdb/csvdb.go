@@ -259,7 +259,6 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 		stmt.ScanValues(val)
 		names := stmt.ColumnNames()
 		stmt.ScanValues(val)
-		fmt.Println(val)
 
 		r := map[string]string{}
 		for i, h := range names {
