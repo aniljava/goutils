@@ -264,7 +264,7 @@ func (db *DB) QueryToArray(sql string, args ...interface{}) []map[string]string 
 		r := map[string]string{}
 		for i, h := range names {
 			v := val[i]
-			value = ""
+			value := ""
 			if v != nil {
 				value = v.(string)
 			}
