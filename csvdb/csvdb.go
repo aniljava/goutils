@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"github.com/aniljava/goutils/generalutils"
 	"github.com/aniljava/goutils/ioutils"
+	"github.com/gwenn/gosqlite"
 	"os"
+	"strings"
 )
 
 type CSVDB struct {
@@ -16,6 +18,7 @@ type CSVDB struct {
 	writemode     bool
 	index         int
 	invertedIndex map[string]([]int)
+	SQL           sqlite.Conn
 }
 
 func example() {
@@ -191,4 +194,82 @@ func (writer *CSVDB) FindCell(searchcol string, searchval string, col string) st
 		return row[index]
 	}
 	return ""
+}
+
+type DB struct {
+	FileName string
+	Conn     *sqlite.Conn
+}
+
+func Open(name string) *DB {
+	db := DB{}
+	db.FileName = name
+
+	if ioutils.Exists(name) {
+		if conn, err := import_csv(name); err == nil {
+			db.Conn = conn
+		} else {
+			return nil
+		}
+	} else {
+		if conn, err := sqlite.Open(":memory:"); err == nil {
+			db.Conn = conn
+		} else {
+			return nil
+		}
+	}
+	return &db
+}
+
+func import_csv(name string) (*sqlite.Conn, error) {
+
+	file := ioutils.OpenFile(name)
+	defer file.Close()
+	reader := csv.NewReader(file)
+	reader.LazyQuotes = true
+	reader.TrimLeadingSpace = true
+	reader.TrailingComma = true
+	if data, err := reader.ReadAll(); err == nil {
+		if db, err := sqlite.Open(":memory:"); err == nil {
+			sql := ""
+			for _, header := range data[0] {
+				if sql == "" {
+					sql = "CREATE TABLE IF NOT EXISTS CSV (" + header + " TEXT "
+				} else {
+					sql += ", " + header + " TEXT "
+
+				}
+			}
+			sql += ")"
+
+			if db.Exec(sql) != nil {
+				return nil, err
+			}
+			if db.Exec("DELETE FROM CSV") != nil {
+				return nil, err
+			}
+
+			qs := strings.Repeat("?,", len(data[0]))
+			qs = qs[:len(qs)-1] // remove last coma
+			if stmt, err := db.Prepare("INSERT INTO CSV VALUES(" + qs + ")"); err == nil {
+				defer stmt.Finalize()
+				db.Begin()
+				for i, values := range data {
+					if i != 0 {
+						stmt.Exec(generalutils.StrArrayToInterfaceArray(values)...)
+					}
+				}
+				db.Commit()
+				return db, nil
+			} else {
+				return nil, err
+			}
+
+		} else {
+			return nil, err
+		}
+	} else {
+		return nil, err
+	}
+
 }
