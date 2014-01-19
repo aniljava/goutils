@@ -219,6 +219,21 @@ func (db *DB) QueryString(col string, clause string, args ...string) string {
 
 }
 
+func (db *DB) QueryStringByKey(col string, key string, val string) string {
+
+	stmt, _ := db.Conn.Prepare("SELECT " + col + " FROM CSV WHERE " + key + "=?")
+	defer stmt.Finalize()
+	stmt.Bind([]string{val})
+	if exists, _ := stmt.Next(); exists {
+		val := make([]interface{}, 1)
+		stmt.ScanValues(val)
+		return val[0].(string)
+	} else {
+		return ""
+	}
+
+}
+
 type DB struct {
 	FileName string
 	Conn     *sqlite.Conn
