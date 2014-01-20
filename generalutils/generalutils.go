@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -212,4 +213,14 @@ func CacheExists(key string) bool {
 	} else {
 		return false
 	}
+}
+
+func extractRegex(str, regex string) string {
+	if r, err := regexp.Compile(regex); err == nil {
+		if sm := r.FindSubmatch([]byte(str)); sm != nil {
+			return string(sm[1])
+		}
+	}
+
+	return ""
 }
