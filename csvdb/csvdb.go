@@ -375,7 +375,7 @@ func (db *DB) CSVExport(writer io.Writer) error {
 	header := db.Header
 	fmt.Println(header)
 
-	if header == nil {
+	if header == nil || len(header) == 0 {
 		cols, _ := db.Conn.Columns("main", "CSV")
 		header := []string{}
 		for _, table := range cols {
