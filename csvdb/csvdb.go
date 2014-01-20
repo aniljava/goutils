@@ -332,8 +332,6 @@ func (db *DB) Iterate(sql string, args ...interface{}) chan map[string]string {
 			panic(err)
 		}
 		stmt.Bind(args)
-		defer stmt.Finalize()
-
 		exists, err := stmt.Next()
 		for exists && err == nil {
 			val := make([]interface{}, stmt.ColumnCount())
@@ -355,6 +353,7 @@ func (db *DB) Iterate(sql string, args ...interface{}) chan map[string]string {
 			exists, err = stmt.Next()
 		}
 		result <- nil
+		stmt.Finalize()
 	}
 
 	go iterator()
