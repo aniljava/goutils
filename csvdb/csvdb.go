@@ -354,6 +354,7 @@ func (db *DB) Iterate(sql string, args ...interface{}) chan map[string]string {
 			result <- r
 			exists, err = stmt.Next()
 		}
+		result <- nil
 	}
 
 	go iterator()
