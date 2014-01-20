@@ -323,7 +323,7 @@ func (db *DB) SetHeader(header ...string) *DB {
 	return db
 }
 
-func (db *DB) Iterate(sql string, args []interface{}) chan map[string]string {
+func (db *DB) Iterate(sql string, args ...interface{}) chan map[string]string {
 	result := make(chan map[string]string)
 
 	iterator := func() {
