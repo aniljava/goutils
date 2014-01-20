@@ -323,6 +323,42 @@ func (db *DB) SetHeader(header ...string) *DB {
 	return db
 }
 
+func (db *DB) Iterate(sql string, args []interface{}) chan map[string]string {
+	result := make(chan map[string]string)
+
+	iterator := func() {
+		stmt, err := db.Conn.Prepare(sql)
+		if err != nil {
+			panic(err)
+		}
+		stmt.Bind(args)
+		defer stmt.Finalize()
+
+		exists, err := stmt.Next()
+		for exists && err == nil {
+			val := make([]interface{}, stmt.ColumnCount())
+			stmt.ScanValues(val)
+			names := stmt.ColumnNames()
+
+			r := map[string]string{}
+			for i, h := range names {
+				v := val[i]
+				value := ""
+				if v != nil {
+					value = v.(string)
+				}
+
+				r[h] = value
+			}
+
+			result <- r
+			exists, err = stmt.Next()
+		}
+	}
+
+	go iterator()
+	return result
+}
 func (db *DB) Close() {
 	//Make changes
 	db.Conn.Close()
