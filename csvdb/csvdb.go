@@ -373,6 +373,7 @@ func toid(str string) string {
 func (db *DB) CSVExport(writer io.Writer) error {
 
 	header := db.Header
+	fmt.Println(header)
 
 	if header == nil {
 		cols, _ := db.Conn.Columns("main", "CSV")
