@@ -198,12 +198,13 @@ func (writer *CSVDB) FindCell(searchcol string, searchval string, col string) st
 	return ""
 }
 
-func (db *DB) Insert(data []string) {
+func (db *DB) Insert(data []string) error {
 	qs := strings.Repeat("?,", len(data))
 	qs = qs[:len(qs)-1] // remove last coma
 	if err := db.Conn.Exec("INSERT INTO CSV VALUES("+qs+")", generalutils.StrArrayToInterfaceArray(data)...); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }
 
 func (db *DB) QueryString(col string, clause string, args ...string) string {
