@@ -382,6 +382,8 @@ func (db *DB) CSVExport(writer io.Writer) error {
 		}
 	}
 
+	fmt.Println(db.Conn.Columns("main", "CSV"))
+
 	csv := csv.NewWriter(writer)
 	csv.Write(header)
 	csv.Flush()
