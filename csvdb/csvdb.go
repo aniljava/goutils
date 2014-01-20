@@ -289,6 +289,11 @@ func (db *DB) SetHeader(header ...string) *DB {
 	if err := db.Conn.Exec("DROP TABLE IF EXISTS CSV"); err != nil {
 		panic(err)
 	}
+
+	if err := db.Conn.Exec("DROP TABLE IF EXISTS headermeta"); err != nil {
+		panic(err)
+	}
+
 	db.Conn.Exec("CREATE TABLE headermeta (id TEXT, name TEXT)")
 	db.Header = header
 	db.HeaderMap = map[string]string{}
