@@ -215,7 +215,7 @@ func CacheExists(key string) bool {
 	}
 }
 
-func extractRegex(str, regex string) string {
+func ExtractRegex(str, regex string) string {
 	if r, err := regexp.Compile(regex); err == nil {
 		if sm := r.FindSubmatch([]byte(str)); sm != nil {
 			return string(sm[1])
