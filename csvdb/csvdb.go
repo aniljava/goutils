@@ -8,6 +8,8 @@ import (
 	"github.com/aniljava/goutils/ioutils"
 	"github.com/gwenn/gosqlite"
 	"io"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strings"
 )
@@ -67,9 +69,12 @@ func OpenWithIndex(name string, indices ...string) *CSVDB {
 }
 
 func OpenWithHeader(name string) *CSVDB {
-	file := ioutils.OpenFile(name)
-	defer file.Close()
-	reader := csv.NewReader(file)
+	file := ioutils.ReadFile(name)
+	return OpenWithHeaderWithBytes([]byte(file))
+}
+
+func OpenWithHeaderWithBytes(data []byte) *CSVDB {
+	reader := csv.NewReader(bytes.NewReader(data))
 	reader.LazyQuotes = true
 	reader.TrimLeadingSpace = true
 	reader.TrailingComma = true
@@ -85,7 +90,6 @@ func OpenWithHeader(name string) *CSVDB {
 		panic(err)
 	}
 	return nil
-
 }
 
 func NewWithHeader(name string, headers []string) *CSVDB {
@@ -374,6 +378,12 @@ func Open(name string) *DB {
 		db.DBFile = ":memory:"
 	} else if strings.HasSuffix(name, "db") {
 		db.DBFile = name
+	} else if strings.HasPrefix(name, "http") {
+		if resp, err := http.Get(name); err == nil {
+			if data, err := ioutil.ReadAll(resp.Body); err == nil {
+				db.mergeCsvWithData(data)
+			}
+		}
 	}
 
 	var err error
@@ -390,6 +400,18 @@ func Open(name string) *DB {
 
 func (db *DB) MergeCSV(path string) {
 	in := OpenWithHeader(path)
+	if cols, err := db.Conn.Columns("main", "CSV"); err != nil || len(cols) == 0 {
+		db.SetHeader(in.Header...)
+	}
+
+	for in.HasNext() {
+		values := in.Next()
+		db.Insert(values)
+	}
+}
+
+func (db *DB) mergeCsvWithData(data []byte) {
+	in := OpenWithHeaderWithBytes(data)
 	if cols, err := db.Conn.Columns("main", "CSV"); err != nil || len(cols) == 0 {
 		db.SetHeader(in.Header...)
 	}
