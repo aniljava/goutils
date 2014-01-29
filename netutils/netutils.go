@@ -3,7 +3,6 @@ package netutils
 import (
 	"bytes"
 	"crypto/tls"
-	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
