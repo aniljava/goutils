@@ -62,8 +62,6 @@ func Upload(url string, data []byte) (body string, err error) {
 	// Don't forget to set the content type, this will contain the boundary.
 	req.Header.Set("Content-Type", mp.FormDataContentType())
 
-	fmt.Print("ASDF", req)
-
 	if resp, err := client.Do(req); err == nil {
 		if content, err := ioutil.ReadAll(resp.Body); err == nil {
 			body = string(content)
